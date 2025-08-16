@@ -1,0 +1,20 @@
+{
+    "students": [
+        {
+            "email": "11235530@st.neu.edu.vn",
+            "name": "Giang Thị Hải Anh",
+            "id": "bc1d"
+        },
+        {
+            "email": "11236224@st.neu.edu.vn",
+            "name": "Hoàng Anh Tuấn",
+            "id": "3fdb"
+        }
+    ],
+    "account": [
+        {
+            "userName": "admin",
+            "password": "123456"
+        }
+    ]
+}
