@@ -1,128 +1,84 @@
 import { useEffect, useState } from "react";
+import axios from "axios";
 
 function StudentList() {
     const API_URL = "http://localhost:3001/students";
-
     const [students, setStudents] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
-
-    const [name, setName] = useState("");
+    const [fullName, setFullName] = useState("");
     const [email, setEmail] = useState("");
-    const [editId, setEditId] = useState(null);
 
-    // Fetch data
-    const fetchStudents = () => {
-        fetch(API_URL)
-            .then((res) => {
-                if (!res.ok) throw new Error("Lỗi khi gọi API");
-                return res.json();
-            })
-            .then((data) => {
-                setStudents(data);
-                setLoading(false);
-            })
-            .catch((err) => {
-                setError(err.message);
-                setLoading(false);
-            });
+    // Tách hàm fetch ra ngoài để tái sử dụng
+    const fetchAPI = async () => {
+        try {
+            const response = await axios.get(API_URL);
+            setStudents(response.data);
+        } catch (error) {
+            console.error("Lỗi khi gọi API:", error);
+        }
     };
 
     useEffect(() => {
-        fetchStudents();
+        fetchAPI();
     }, []);
 
-    // Add student
-    const handleAdd = () => {
-        if (!name || !email) return alert("Vui lòng nhập đủ thông tin!");
+    const handleAddMember = async () => {
+        if (!fullName || !email) return alert("Bạn đã nhập thiếu thông tin");
 
-        fetch(API_URL, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ name, email }),
-        }).then(() => {
-            setName("");
-            setEmail("");
-            fetchStudents();
+        await axios.post(API_URL, {
+            name: fullName,
+            email: email
         });
+
+        await fetchAPI();
+
+        setFullName("");
+        setEmail("");
+        alert("Bạn đã thêm sinh viên thành công");
     };
-
-    // Delete student
-    const handleDelete = (id) => {
-        if (!window.confirm("Bạn có chắc muốn xóa?")) return;
-
-        fetch(`${API_URL}/${id}`, { method: "DELETE" }).then(() => {
-            fetchStudents();
-        });
-    };
-
-    // Edit student (load data lên form)
-    const handleEdit = (student) => {
-        setEditId(student.id);
-        setName(student.name);
-        setEmail(student.email);
-    };
-
-    // Update student
-    const handleUpdate = () => {
-        fetch(`${API_URL}/${editId}`, {
-            method: "PUT",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ name, email }),
-        }).then(() => {
-            setName("");
-            setEmail("");
-            setEditId(null);
-            fetchStudents();
-        });
-    };
-
-    if (loading) return <p>Đang tải dữ liệu...</p>;
-    if (error) return <p style={{ color: "red" }}>Lỗi: {error}</p>;
-
+    const handleDeleteMember = async (id) => {
+        const response = await axios.delete(`${API_URL}/${id}`)
+        fetchAPI();
+    }
     return (
         <div style={{ padding: 20 }}>
-            <h2>Danh sách sinh viên</h2>
+            <h1>Danh sách sinh viên Fit-up</h1>
 
-            {/* Form thêm/sửa */}
-            <div style={{ marginBottom: 20 }}>
+            {/* Form nhập */}
+            <div style={{ marginBottom: 20, display: "flex", gap: 5 }}>
                 <input
                     type="text"
-                    placeholder="Tên sinh viên"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
+                    placeholder="Hãy nhập tên sinh viên"
+                    value={fullName}
+                    onChange={(e) => setFullName(e.target.value)}
                 />
                 <input
                     type="email"
-                    placeholder="Email sinh viên"
+                    placeholder="Hãy nhập email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                 />
-                {editId ? (
-                    <button onClick={handleUpdate}>Cập nhật</button>
-                ) : (
-                    <button onClick={handleAdd}>Thêm</button>
-                )}
-                {editId && (
-                    <button
-                        onClick={() => {
-                            setEditId(null);
-                            setName("");
-                            setEmail("");
-                        }}
-                    >
-                        Hủy
-                    </button>
-                )}
+                <button onClick={handleAddMember}>Thêm sinh viên</button>
             </div>
 
             {/* Danh sách sinh viên */}
             <ul>
                 {students.map((student) => (
-                    <li key={student.id}>
-                        <strong>{student.name}</strong> - {student.email}{" "}
-                        <button onClick={() => handleEdit(student)}>Sửa</button>
-                        <button onClick={() => handleDelete(student.id)}>Xóa</button>
+                    <li
+                        key={student.id}
+                        style={{
+                            display: "flex",
+                            gap: 10,
+                            alignItems: "center",
+                            marginBottom: 5,
+                        }}
+                    >
+                        <div>
+                            <strong>
+                                {student.id} - {student.name} - {student.email}
+                            </strong>
+                        </div>
+                        <button>Sửa</button>
+                        <button onClick={() => handleDeleteMember(student.id)}>Xóa</button>
                     </li>
                 ))}
             </ul>

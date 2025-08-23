@@ -11,32 +11,27 @@ function LoginPage() {
         e.preventDefault();
         try {
             const res = await axios.get("http://localhost:3001/account");
-            console.log("res", res.data)
             const account = res.data.find(
                 (acc) => acc.userName === email && acc.password === password
             );
-            // if (account) {
-            //     alert("Đăng nhập thành công!");
-            //     navigate("/studentlist");
-            // } else {
-            //     alert("Sai tài khoản hoặc mật khẩu!");
-            // }
+
+            if (account) {
+                alert("Đăng nhập thành công!");
+                navigate("/studentlist");
+            } else {
+                alert("Sai tài khoản hoặc mật khẩu!");
+            }
         } catch (err) {
             console.error(err);
             alert("Lỗi kết nối server!");
         }
     };
-    const [number, setNumber] = useState(0);
-    //const number =0
-    const handleClickNumber = () => {
-        setNumber((prev) => prev + 1)
-    }
+
     return (
         <div style={styles.container}>
             <form style={styles.box} onSubmit={handleSubmit}>
-                <h1>{number}</h1>
                 <h2 style={styles.title}>Đăng nhập</h2>
-                <button onClick={handleClickNumber}> Tăng số </button>
+
                 <label style={styles.label}>Email</label>
                 <input
                     type="text"
