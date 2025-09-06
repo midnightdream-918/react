@@ -1,9 +1,10 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import axios from "axios";
+import './Login.css';
 
 function LoginPage() {
-    const [email, setEmail] = useState("");
+    const [userName, setUserName] = useState("");
     const [password, setPassword] = useState("");
     const navigate = useNavigate();
 
@@ -12,7 +13,7 @@ function LoginPage() {
         try {
             const res = await axios.get("http://localhost:3001/account");
             const account = res.data.find(
-                (acc) => acc.userName === email && acc.password === password
+                (acc) => acc.userName === userName && acc.password === password
             );
 
             if (account) {
@@ -28,39 +29,43 @@ function LoginPage() {
     };
 
     return (
-        <div style={styles.container}>
-            <form style={styles.box} onSubmit={handleSubmit}>
-                <h2 style={styles.title}>Đăng nhập</h2>
+        <div className="login-container">
+            <form className="login-card login-form" onSubmit={handleSubmit}>
+                <h2 className="login-title">Đăng nhập</h2>
+                <p className="login-subtitle">Vui lòng nhập thông tin để đăng nhập</p>
+                <div className="form-group">
+                    <label className="form-label">Tên đăng nhập</label>
+                    <input
+                        type="text"
+                        placeholder="Nhập tên đăng nhập..."
+                        value={userName}
+                        onChange={(e) => setUserName(e.target.value)}
+                        className="form-input"
+                        required
+                    />
+                </div>
+                <div className="form-group">
+                    <label className="form-label">Mật khẩu</label>
+                    <input
+                        type="password"
+                        placeholder="Nhập mật khẩu..."
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        className="form-input"
+                        required
+                    />
+                </div>
 
-                <label style={styles.label}>Email</label>
-                <input
-                    type="text"
-                    placeholder="Nhập tên đăng nhập..."
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    style={styles.input}
-                    required
-                />
-
-                <label style={styles.label}>Mật khẩu</label>
-                <input
-                    type="password"
-                    placeholder="Nhập mật khẩu..."
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    style={styles.input}
-                    required
-                />
-
-                <button type="submit" style={styles.button}>
+                <button type="submit" className="login-button">
                     Đăng nhập
                 </button>
+
+                <div className="signup-link">
+                    Chưa có tài khoản? <Link to="/register">Đăng ký ngay</Link>
+                </div>
             </form>
         </div>
     );
 }
-
-
-const styles = { container: { height: "100vh", display: "flex", justifyContent: "center", alignItems: "center", background: "linear-gradient(120deg, #0d6efd, #6c63ff)", margin: 0, fontFamily: "Arial, sans-serif", }, box: { background: "white", padding: "30px", borderRadius: "10px", boxShadow: "0 4px 12px rgba(0,0,0,0.1)", width: "300px", display: "flex", flexDirection: "column", }, title: { textAlign: "center", marginBottom: "20px", color: "#333", }, label: { fontSize: "14px", marginBottom: "5px", color: "#555", }, input: { padding: "10px", marginBottom: "15px", borderRadius: "5px", border: "1px solid #ccc", outline: "none", fontSize: "14px", }, button: { padding: "10px", background: "#0d6efd", color: "white", fontSize: "16px", border: "none", borderRadius: "5px", cursor: "pointer", }, };
 
 export default LoginPage;
