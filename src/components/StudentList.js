@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import './StudentList.css';
 
@@ -7,6 +8,7 @@ function StudentList() {
     const [students, setStudents] = useState([]);
     const [fullName, setFullName] = useState("");
     const [email, setEmail] = useState("");
+    const navigate = useNavigate();
 
     const fetchAPI = async () => {
         try {
@@ -44,6 +46,15 @@ function StudentList() {
     return (
         <div className="student-list-container">
             <h1 className="student-list-title">Danh sách sinh viên Fit-up</h1>
+
+            {/* Button chuyển sang bảng */}
+            <button
+                className="switch-btn"
+                onClick={() => navigate("/tablelist")}
+                style={{ marginBottom: "15px" }}
+            >
+                Chuyển sang dạng bảng
+            </button>
 
             {/* Form nhập */}
             <div className="student-form">

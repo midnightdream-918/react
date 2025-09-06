@@ -2,7 +2,8 @@ import LoginPage from "../containers/Login";
 import RegisterPage from "../containers/RegisterPage";
 import StudentList from "./StudentList";
 import Info from "./Info";
-import { Route, Routes, Outlet, useLocation } from "react-router-dom";
+import TableList from "./TableList";   // <-- import mới
+import { Route, Routes, Outlet, useLocation, useNavigate } from "react-router-dom";
 import Header from "./Header";
 import Footer from "./Footer";
 import './Body.css';
@@ -31,10 +32,12 @@ function Body() {
                 <Route element={<Layout />}>
                     <Route path="/info" element={<Info />} />
                     <Route path="/studentlist" element={<StudentList />} />
+                    <Route path="/tablelist" element={<TableList />} />
                 </Route>
             </Routes>
         </main>
     );
 }
+
 
 export default Body;
