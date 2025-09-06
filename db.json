@@ -21,36 +21,6 @@
       "userName": "admin",
       "password": "123456",
       "id": "bf37"
-    },
-    {
-      "id": "2912",
-      "mssv": "1123",
-      "fullName": "Meow",
-      "userName": "1@gmail.com",
-      "password": "Linh@161"
-    },
-    {
-      "id": "151e",
-      "mssv": "1123",
-      "fullName": "Meow",
-      "userName": "1@gmail.com",
-      "password": "Kimd2310@"
-    },
-    {
-      "id": "c7fc",
-      "mssv": "52",
-      "fullName": "nig",
-      "userName": "meow",
-      "email": "11235614@st.neu.edu.vn",
-      "password": "Kimd2310@"
-    },
-    {
-      "id": "1463",
-      "mssv": "1624",
-      "fullName": "kji",
-      "userName": "aaa",
-      "email": "njwu@gmail.com",
-      "password": "Mkmanh@1"
     }
   ]
 }
