@@ -8,6 +8,7 @@ function StudentList() {
     const [students, setStudents] = useState([]);
     const [fullName, setFullName] = useState("");
     const [email, setEmail] = useState("");
+    const [editId, setEditId] = useState(null); // để biết đang sửa ai
     const navigate = useNavigate();
 
     const fetchAPI = async () => {
@@ -23,24 +24,43 @@ function StudentList() {
         fetchAPI();
     }, []);
 
-    const handleAddMember = async () => {
+    const handleAddOrUpdateMember = async () => {
         if (!fullName || !email) return alert("Bạn đã nhập thiếu thông tin");
 
-        await axios.post(API_URL, {
-            name: fullName,
-            email: email,
-        });
+        if (editId) {
+            // update sinh viên
+            await axios.put(`${API_URL}/${editId}`, {
+                name: fullName,
+                email: email,
+            });
+            alert("Bạn đã cập nhật sinh viên thành công");
+            setEditId(null);
+        } else {
+            // thêm mới
+            await axios.post(API_URL, {
+                name: fullName,
+                email: email,
+            });
+            alert("Bạn đã thêm sinh viên thành công");
+        }
 
         await fetchAPI();
 
         setFullName("");
         setEmail("");
-        alert("Bạn đã thêm sinh viên thành công");
     };
 
     const handleDeleteMember = async (id) => {
-        await axios.delete(`${API_URL}/${id}`);
-        fetchAPI();
+        if (window.confirm("Bạn có chắc muốn xóa sinh viên này?")) {
+            await axios.delete(`${API_URL}/${id}`);
+            fetchAPI();
+        }
+    };
+
+    const handleEditMember = (student) => {
+        setFullName(student.name);
+        setEmail(student.email);
+        setEditId(student.id); // lưu id để update
     };
 
     return (
@@ -70,8 +90,8 @@ function StudentList() {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                 />
-                <button className="add-student-btn" onClick={handleAddMember}>
-                    Thêm sinh viên
+                <button className="add-student-btn" onClick={handleAddOrUpdateMember}>
+                    {editId ? "Cập nhật sinh viên" : "Thêm sinh viên"}
                 </button>
             </div>
 
@@ -95,7 +115,12 @@ function StudentList() {
                             <td>{student.email}</td>
                             <td>
                                 <div className="action-buttons">
-                                    <button className="edit-btn">Sửa</button>
+                                    <button
+                                        className="edit-btn"
+                                        onClick={() => handleEditMember(student)}
+                                    >
+                                        Sửa
+                                    </button>
                                     <button
                                         className="delete-btn"
                                         onClick={() => handleDeleteMember(student.id)}
